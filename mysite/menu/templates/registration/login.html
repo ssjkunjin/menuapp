@@ -1,0 +1,27 @@
+{% extends "menu/base.html" %}
+{% load staticfiles %}
+
+{% block includes %}
+  <link href="{% static "menu/css/signin.css" %}" rel="stylesheet">
+	
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<div class="alert alert-danger">Your username and password didn't match. Please try again.</div>
+{% endif %}
+
+<form class="form-signin" method="post" action="{% url 'menu:login' %}" role="form">
+{% csrf_token %}
+<h2 class="form-signin-heading">Please sign in</h2>
+  <input type="input" class="form-control" placeholder="Username" required autofocus name="username" id="{{ form.username.id_for_label }}">
+  <input type="password" class="form-control" placeholder="Password" required name="password" id="{{ form.password.id_for_label }}">
+  <input type="submit" class="btn btn-lg btn-primary btn-block" value="Sign in" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}

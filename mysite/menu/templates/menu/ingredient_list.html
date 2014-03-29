@@ -1,0 +1,25 @@
+{% extends "menu/base.html" %}
+{% load staticfiles %}
+
+{% block includes %}
+ <link href="{% static "menu/css/ingredient_list.css" %}" rel="stylesheet">
+	
+{% endblock %}
+{% block content %}
+<div class="header row">
+	<div class="col-xs-2">
+      <h1>Ingredients</h1>
+	</div>
+	<div class="col-xs-2">
+		<a role="button" class="btn btn-primary btn-lg" href="{% url "menu:ingredient_add" %}">
+			<span class="glyphicon glyphicon-plus"></span> Add
+		</a>
+	</div>
+
+  </div>
+    <ul>
+        {% for ingredient in object_list %}
+            <li>{{ ingredient.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

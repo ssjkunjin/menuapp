@@ -1,0 +1,13 @@
+{% extends "menu/base.html" %}
+{% block content %}
+<h3>Recent Recipes</h3>
+{% if recipes %}
+    <ul>
+    {% for recipe in recipes %}
+        <li><a href="{% url 'menu:recipe_detail' recipe.id %}">{{ recipe.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Recipes</p>
+{% endif %}
+{% endblock %}

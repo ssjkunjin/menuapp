@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class='detail_title'>{{ recipe.name }}</h1>
+<div>Created: {{ recipe.created }}</div>
+<div>Rating: {{ recipe.rating }} stars</div>
+{% if recipe.private %} 
+	<div class='private'>Private Listing</div>
+{% endif%}
+<div class='directions'>
+<div class='label'>Directions</div>
+  <div>
+  {{ recipe.directions }}
+  </div>
+</div>
+{% endblock %}
