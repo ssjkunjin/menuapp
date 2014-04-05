@@ -1,15 +1,26 @@
-{% extends "base.html" %}
+{% extends "menu/base.html" %}
+{% load staticfiles %}
+
 {% block content %}
-<h1 class='detail_title'>{{ recipe.name }}</h1>
-<div>Created: {{ recipe.created }}</div>
-<div>Rating: {{ recipe.rating }} stars</div>
+<h1 class='detail_title'>{{ recipe.name }}
 {% if recipe.private %} 
-	<div class='private'>Private Listing</div>
-{% endif%}
-<div class='directions'>
-<div class='label'>Directions</div>
-  <div>
-  {{ recipe.directions }}
-  </div>
+	<span id="private" data-toggle="tooltip" data-placement="right" title="Private" class='h4 text-danger glyphicon glyphicon-eye-close'></span>
+{% endif%}</h1>
+<div class="row">
+  <div class="col-xs-3"><span class="h3">Created </span> {{ recipe.created }}</div>
+  <div class="col-xs-3"><span class="h3">Rating </span> {% for i in rating_loop %} <span class="text-warning glyphicon glyphicon-star"></span>{% endfor %}</div>
 </div>
+  <h3>Ingredients</h3>
+{% for ingredient in recipe_ingredients %}
+<div>{{ ingredient.amount|floatformat }} {{ ingredient.get_unit_display}} {{ ingredient.ingredient.name}}</div>
+{% endfor %}
+<h3>Directions</h3>
+<div class="row">
+<div class="col-xs-5">
+  <pre>{{ recipe.directions }}</pre>
+</div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static "menu/js/recipe_detail.js" %}"></script>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends "menu/base.html" %}
+{% block content %}
+<h1 class='detail_name'>Ingredient Details</h1>
+<div class="row">
+	<div class="col-xs-2">
+      <h3>Name:</h3>
+	</div>
+	<div class="col-xs-2">
+	  <h3>{{ ingredient.name }}</h3>
+	</div>
+
+  </div>
+  <div class="row">
+	<div class="col-xs-2">
+      <h3>Category:</h3>
+	</div>
+	<div class="col-xs-2">
+	  <h3>{{ ingredient.category }}</h3>
+	</div>
+
+  </div>
+{% endblock %}

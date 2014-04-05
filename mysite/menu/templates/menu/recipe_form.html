@@ -1,0 +1,21 @@
+{% extends "menu/base.html" %}
+{% load staticfiles %}
+
+{% block includes %}
+  <link href="{% static "menu/css/ingredient_form.css" %}" rel="stylesheet">
+	
+{% endblock %}
+
+{% block content %}
+
+<form action="{% if recipe %}
+{% url "menu:recipe_update" recipe.pk %}
+{% else %}
+{% url "menu:recipe_add" %}
+{% endif %}" method="post">
+{% csrf_token %}
+  {{ form.as_p }}
+  {{ formset }}
+  <input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit" />
+</form>
+{% endblock %}

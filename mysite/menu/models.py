@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Profile(models.Model):
     user = models.OneToOneField(User)
@@ -31,16 +33,22 @@ class Recipe(models.Model):
     name = models.CharField(max_length=100)
     profile = models.ForeignKey(Profile)
     private = models.BooleanField()
-    rating = models.IntegerField()
-    created = models.DateTimeField()
+    rating = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(5)])
+    created = models.DateTimeField(auto_now_add=True)
     directions = models.TextField()
-    meal = models.ForeignKey(Meal)
 
     def __str__(self):
         return self.name
 
+class MealRecipe(models.Model):
+    meal = models.ForeignKey(Meal)
+    recipe = models.ForeignKey(Recipe)
+
+    def __str__(self):
+        return '%s - %s' % self.meal, self.recipe
+
 class Ingredient(models.Model):
-    CONDIMENTS = 'cnd'
+    CONDIMENT = 'cnd'
     DAIRY = 'dry'
     FRUIT = 'frt'
     GRAIN = 'grn'
@@ -50,7 +58,7 @@ class Ingredient(models.Model):
     VEGETABLE = 'veg'
 
     CATEGORY_CHOICES = (
-        (CONDIMENTS, 'condiments'),
+        (CONDIMENT, 'condiment'),
         (DAIRY, 'dairy'),
         (FRUIT, 'fruit'),
         (GRAIN, 'grain'),
@@ -65,7 +73,7 @@ class Ingredient(models.Model):
                                 choices=CATEGORY_CHOICES)
 
     def get_absolute_url(self):
-        return reverse('menu:ingredient-detail', kwargs={'pk': self.pk})
+        return reverse('menu:ingredient_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name
@@ -90,11 +98,12 @@ class RecipeIngredient(models.Model):
         (QUART, 'quart'),
         (TEASPOON, 'teaspoon'),
         (TABLESPOON, 'tablespoon'),
-        (NONE, 'none')
+        (NONE, '')
     )
     recipe = models.ForeignKey(Recipe)
     amount = models.DecimalField(max_digits=5,
-                                 decimal_places=2)
+                                 decimal_places=2,
+                                 validators=[MinValueValidator(0)])
     unit = models.CharField(max_length=4,
                             choices=UNIT_CHOICES)
     ingredient = models.ForeignKey(Ingredient)

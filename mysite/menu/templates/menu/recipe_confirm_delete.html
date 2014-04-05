@@ -1,0 +1,14 @@
+{% extends "menu/base.html" %}
+{% load staticfiles %}
+
+{% block includes %}
+  <link href="{% static "menu/css/recipe_form.css" %}" rel="stylesheet">
+	
+{% endblock %}
+
+{% block content %}
+<form action="{% url "menu:recipe_delete" recipe.pk %}" method="post">{% csrf_token %}
+<h3>Are You Sure You Want to Delete?</h3>
+  <input type="submit" class="btn btn-lg btn-primary btn-block" value="Confirm" />
+</form>
+{% endblock %}
