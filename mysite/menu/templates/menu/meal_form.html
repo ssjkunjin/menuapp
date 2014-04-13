@@ -3,17 +3,19 @@
 
 {% block includes %}
   <link href="{% static "menu/css/ingredient_form.css" %}" rel="stylesheet">
-	
+  <link href="{% static "menu/css/datepicker.css" %}" rel="stylesheet">
+		
 {% endblock %}
 
 {% block content %}
 
-<form action="{% if recipe %}
-{% url "menu:recipe_update" recipe.pk %}
+<form action="{% if meal %}
+{% url "menu:meal_update" meal.pk %}
 {% else %}
-{% url "menu:recipe_add" %}
+{% url "menu:meal_add" %}
 {% endif %}" method="post">
 {% csrf_token %}
+  {{ form.media }}
   {{ form.non_field_errors }}
   <div class="form-group">
     {{ form.name.errors }}
@@ -21,26 +23,21 @@
 	{{ form.name }}
   </div>
    <div class="form-group">
-	{{ form.private.errors }}
-	<label for="{{ form.private.id_for_label }}">{{ form.private.label }}</label>
-	{{ form.private }}
-	</div>
-	 <div class="form-group">
-	{{ form.rating.errors }}
-	<label for="{{ form.rating.id_for_label }}">{{ form.rating.label }}</label>
-	{{ form.rating }}
+	{{ form.date.errors }}
+	<label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+	{{ form.date }}
 	</div>
 	<div class="form-group">
 	  {{ formset.management_form }}
-	  <table id="ingredient_table" class="table table-striped">
+	  <table id="recipe_table" class="table table-striped">
 	  <thead>
-	   <tr><th>Amount</th><th>Unit</th><th>Ingredient</th><th>Delete</th></tr>
+	   <tr><th>Recipe</th><th>Delete</th></tr>
 	   </thead>
 	   <tfoot>
 	     <tr>
-		   <td colspan="4">
-		     <button type="button" class="btn btn-primary btn-xs" id="add_ingredient_row">
-			 <span class="glyphicon glyphicon-plus"></span>Add Ingredient
+		   <td colspan="2">
+		     <button type="button" class="btn btn-primary btn-xs" id="add_recipe_row">
+			 <span class="glyphicon glyphicon-plus"></span>Add Recipe
 			 </button>
 		   </td>
 		 </tr>
@@ -49,13 +46,7 @@
 		     {{ formset.empty_form.id }}
 		   </td>
 	       <td>
-		     {{ formset.empty_form.amount }}
-		   </td>
-		   <td>
-		     {{ formset.empty_form.unit }}
-		   </td>
-		   <td>
-		     {{ formset.empty_form.ingredient }}
+		     {{ formset.empty_form.recipe }}
 		   </td>
 		   <td>
   		     <a class='delete_row' href='javascript:void(0)'><span class='glyphicon glyphicon-remove'/></a>
@@ -70,14 +61,8 @@
 		     {{ form.id }}
 		   </td>
 		   <td>
-		    {{ form.amount }}
+		    {{ form.recipe }}
  		   </td>
-		   <td>
-		    {{ form.unit }}
-		   </td>
-		   <td>
-		     {{ form.ingredient }}
-		   </td>
 		   <td>
 		     {% if formset.can_delete %}
 		     {{ form.DELETE }}
@@ -88,14 +73,10 @@
 	   </tbody>
 	  </table>
 	</div>
-	 <div class="form-group">
-	{{ form.directions.errors }}
-	<label for="{{ form.directions.id_for_label }}">{{ form.directions.label }}</label>
-	{{ form.directions }}
-	</div>
   <input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit" />
 </form>
 {% endblock %}
 {% block js %}
-<script src="{% static "menu/js/recipe_form.js" %}"></script>
+<script src="{% static "menu/js/bootstrap-datepicker.js" %}"></script>
+<script src="{% static "menu/js/meal_form.js" %}"></script>
 {% endblock %}

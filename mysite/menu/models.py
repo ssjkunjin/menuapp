@@ -16,10 +16,10 @@ class Meal(models.Model):
     DINNER = 'dnr'
     SNACK = 'sck'
     MEAL_CHOICES = (
-        (BREAKFAST, 'breakfast'),
-        (LUNCH, 'lunch'),
-        (DINNER, 'dinner'),
-        (SNACK, 'snack')
+        (BREAKFAST, 'Breakfast'),
+        (LUNCH, 'Lunch'),
+        (DINNER, 'Dinner'),
+        (SNACK, 'Snack')
     )
     name = models.CharField(max_length=3,
                             choices=MEAL_CHOICES)
@@ -27,7 +27,7 @@ class Meal(models.Model):
     profile = models.ForeignKey(Profile)
 
     def __str__(self):
-        return '%s - %s' % self.date,self.name
+        return '%s - %s' % (self.date,self.name)
 
 class Recipe(models.Model):
     name = models.CharField(max_length=100)
@@ -38,14 +38,14 @@ class Recipe(models.Model):
     directions = models.TextField()
 
     def __str__(self):
-        return self.name
+        return '%s' % self.name
 
 class MealRecipe(models.Model):
     meal = models.ForeignKey(Meal)
     recipe = models.ForeignKey(Recipe)
 
     def __str__(self):
-        return '%s - %s' % self.meal, self.recipe
+        return '%s - %s' % (self.meal, self.recipe)
 
 class Ingredient(models.Model):
     CONDIMENT = 'cnd'
@@ -58,14 +58,14 @@ class Ingredient(models.Model):
     VEGETABLE = 'veg'
 
     CATEGORY_CHOICES = (
-        (CONDIMENT, 'condiment'),
-        (DAIRY, 'dairy'),
-        (FRUIT, 'fruit'),
-        (GRAIN, 'grain'),
-        (MEAT, 'meat'),
-        (MISCELLANEOUS, 'miscellaneous'),
-        (SPICE, 'spice'),
-        (VEGETABLE, 'vegetable')
+        (CONDIMENT, 'Condiment'),
+        (DAIRY, 'Dairy'),
+        (FRUIT, 'Fruit'),
+        (GRAIN, 'Grain'),
+        (MEAT, 'Meat'),
+        (MISCELLANEOUS, 'Miscellaneous'),
+        (SPICE, 'Spice'),
+        (VEGETABLE, 'Vegetable')
 
     )
     name = models.CharField(max_length=60)
@@ -90,14 +90,14 @@ class RecipeIngredient(models.Model):
     NONE = 'none'
 
     UNIT_CHOICES = (
-        (CUP, 'cup'),
-        (GALLON, 'gallon'),
-        (OUNCE, 'ounce'),
-        (PINT, 'pint'),
-        (POUND, 'pound'),
-        (QUART, 'quart'),
-        (TEASPOON, 'teaspoon'),
-        (TABLESPOON, 'tablespoon'),
+        (CUP, 'Cup'),
+        (GALLON, 'Gallon'),
+        (OUNCE, 'Ounce'),
+        (PINT, 'Pint'),
+        (POUND, 'Pound'),
+        (QUART, 'Quart'),
+        (TEASPOON, 'Teaspoon'),
+        (TABLESPOON, 'Tablespoon'),
         (NONE, '')
     )
     recipe = models.ForeignKey(Recipe)
@@ -109,5 +109,5 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient)
 
     def __str__(self):
-        return '%s - %s' % self.recipe, self.ingredient
+        return '%s - %s' % (self.recipe, self.ingredient)
 
