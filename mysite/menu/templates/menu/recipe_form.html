@@ -1,11 +1,6 @@
 {% extends "menu/base.html" %}
 {% load staticfiles %}
 
-{% block includes %}
-  <link href="{% static "menu/css/recipe_form.css" %}" rel="stylesheet">
-	
-{% endblock %}
-
 {% block content %}
 
 <form action="{% if recipe %}

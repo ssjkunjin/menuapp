@@ -1,0 +1,23 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.modal-content {display:inline-block; width:auto: position:fixed; left:33%}
+
+form {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.rating-input {
+  display: inline;
+}
+
+.header a {
+  margin-top:20px
+}

@@ -1,14 +1,10 @@
 {% extends "menu/base.html" %}
-{% load staticfiles %}
-
-{% block includes %}
-  <link href="{% static "menu/css/ingredient_form.css" %}" rel="stylesheet">
-	
-{% endblock %}
 
 {% block content %}
-<form action="{% url "menu:ingredient_delete" ingredient.pk %}" method="post">{% csrf_token %}
+<div class="row text-center">
 <h3>Are You Sure You Want to Delete?</h3>
+</div>
+<form action="{% url "menu:ingredient_delete" ingredient.pk %}" method="post">{% csrf_token %}
   <input type="submit" class="btn btn-lg btn-primary btn-block" value="Confirm" />
 </form>
 {% endblock %}
