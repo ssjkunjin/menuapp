@@ -18,13 +18,23 @@
 
   </div>
     <table class="table table-striped table-bordered">
+	  <tr>
+	  <th>Name</th>
+	  <th>Created</th>
+	  <th>Owner</th>
+	  <th>Actions</th>
+	  </tr>
         {% for recipe in object_list %}
             <tr>
 			<td>{{ recipe.name }}</td>
 			<td>{{ recipe.created }}</td>
+			<td>{{ recipe.profile }}</td>
 			<td>
-  			  <a href="{% url "menu:recipe_update" recipe.pk %}"><span class="glyphicon glyphicon-pencil"/></a>
+			  <a href="{% url "menu:recipe_detail" recipe.pk %}"><span class="glyphicon glyphicon-list"/></a>
+  			  {% if user.profile == recipe.profile %}
+			  <a href="{% url "menu:recipe_update" recipe.pk %}"><span class="glyphicon glyphicon-pencil"/></a>
 			  <a href="{% url "menu:recipe_delete" recipe.pk %}"><span class="glyphicon glyphicon-remove"/></a>
+			  {% endif %}
 			</td>
 			</tr>
         {% endfor %}

@@ -19,5 +19,6 @@ urlpatterns = patterns('',
 	url(r'^calendar/$', views.CalendarView.as_view(), name='calendar'),
 	url(r'^meal/add$', views.MealCreate.as_view(), name='meal_add'),
 	url(r'^meal/(?P<pk>\d+)/$', views.MealUpdate.as_view(), name='meal_update'),
-	url(r'^meal/(?P<pk>\d+)/delete$', views.MealDelete.as_view(), name='meal_delete')
+	url(r'^meal/(?P<pk>\d+)/delete$', views.MealDelete.as_view(), name='meal_delete'),
+	url(r'^grocery$', views.GroceryView.as_view(), name='grocery')
 )

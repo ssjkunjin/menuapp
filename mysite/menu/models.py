@@ -35,7 +35,7 @@ class Recipe(models.Model):
     private = models.BooleanField()
     rating = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(5)])
     created = models.DateTimeField(auto_now_add=True)
-    directions = models.TextField()
+    directions = models.TextField(blank=True)
 
     def __str__(self):
         return '%s' % self.name
@@ -68,9 +68,13 @@ class Ingredient(models.Model):
         (VEGETABLE, 'Vegetable')
 
     )
+
+    profile = models.ForeignKey(Profile)
+    private = models.BooleanField()
     name = models.CharField(max_length=60)
     category = models.CharField(max_length=3,
                                 choices=CATEGORY_CHOICES)
+
 
     def get_absolute_url(self):
         return reverse('menu:ingredient_detail', kwargs={'pk': self.pk})

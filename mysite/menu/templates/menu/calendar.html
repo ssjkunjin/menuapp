@@ -3,12 +3,14 @@
 
 {% block includes %}
  <link href="{% static "menu/css/fullcalendar.css" %}" rel="stylesheet">
+ <link href="{% static "menu/css/calendar.css" %}" rel="stylesheet">
+ 
  <link href="{% static "menu/css/ingredient_list.css" %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
   <div class="header row">
       <div class="col-xs-2">
-      <h1>Recipes</h1>
+      <h1>Calendar</h1>
 	</div>
 	<div class="col-xs-2">
 		<a role="button" class="btn btn-primary btn-lg" href="{% url "menu:meal_add" %}">
@@ -56,6 +58,20 @@
 	{% endfor %}
 	}
   </script>
+  
+<div id="actions-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Actions" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+	  <div class="btn-group">
+      <a id="edit-anchor" role="button" class="btn btn-default" href="#">
+			<span class="glyphicon glyphicon-pencil"></span> Edit</a>
+		<a id="delete-anchor" role="button" class="btn btn-default" href="#">
+			<span class="glyphicon glyphicon-remove"></span> Delete</a>
+		</div>
+
+		</div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
