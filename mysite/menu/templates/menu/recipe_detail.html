@@ -7,8 +7,8 @@
 	<span id="private" data-toggle="tooltip" data-placement="right" title="Private" class='h4 text-danger glyphicon glyphicon-eye-close'></span>
 {% endif%}</h1>
 <div class="row">
-  <div class="col-xs-3"><span class="h3">Created </span> {{ recipe.created }}</div>
-  <div class="col-xs-3"><span class="h3">Rating </span> {% for i in rating_loop %} <span class="text-warning glyphicon glyphicon-star"></span>{% endfor %}</div>
+  <div class="col-xs-6"><span style="white-space:nowrap" class="h3">Created </span> {{ recipe.created }}</div>
+  <div class="col-xs-6"><span class="h3">Rating </span> {% for i in rating_loop %} <span class="text-warning glyphicon glyphicon-star"></span>{% endfor %}</div>
 </div>
   <h3>Ingredients</h3>
 {% for ingredient in recipe_ingredients %}
@@ -16,9 +16,7 @@
 {% endfor %}
 <h3>Directions</h3>
 <div class="row">
-<div class="col-xs-5">
   <pre>{{ recipe.directions }}</pre>
-</div>
 </div>
 {% endblock %}
 {% block js %}

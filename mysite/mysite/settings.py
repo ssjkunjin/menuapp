@@ -71,7 +71,7 @@ DATABASES = {
     }
 }
 
-LOGIN_REDIRECT_URL = 'menu:profile'
+LOGIN_REDIRECT_URL = 'menu:calendar'
 LOGIN_URL = 'menu:login'
 
 LOGGING = {

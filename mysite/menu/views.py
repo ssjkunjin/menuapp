@@ -1,11 +1,12 @@
-import logging
-from datetime import date, timedelta
+import logging, json
+from datetime import datetime, date, timedelta
+from django.http import HttpResponse
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import curry
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
@@ -263,24 +264,45 @@ class IngredientDelete(DeleteView):
     def dispatch(self, *args, **kwargs):
         return super(IngredientDelete, self).dispatch(*args, **kwargs)
 
-class CalendarView(ListView):
+class CalendarView(View):
     template_name = 'menu/calendar.html'
 
-    def get_queryset(self):
-        return self.request.user.profile.meal_set.all()
+    def render_to_json_response(self, context, **response_kwargs):
+        data = json.dumps(context)
+        response_kwargs['content_type'] = 'application/json'
+        return HttpResponse(data, **response_kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if self.request.is_ajax():
+            meals = self.request.user.profile.meal_set.filter(
+                date__gte=request.GET['start']
+            ).filter(
+                date__lt=request.GET['end']
+            )
+
+            data = []
+            count = 0
+            for meal in meals:
+                count = count + 1
+                event = {
+                    'title': meal.get_name_display(),
+                    'start': (datetime.combine(meal.date, datetime.min.time()) + timedelta(seconds=count)).strftime('%Y-%m-%dT%H:%M:%S'),
+                    'pk': meal.pk,
+                    'updateUrl': reverse('menu:meal_update', args=[meal.pk]),
+                    'deleteUrl': reverse('menu:meal_delete', args=[meal.pk])
+                }
+                for mealrecipe in meal.mealrecipe_set.all():
+                    event['title'] = event['title'] + "\n" + mealrecipe.recipe.name
+
+                data.append(event)
+
+            return self.render_to_json_response(data)
+        else:
+            return render(request, self.template_name)
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(CalendarView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(CalendarView, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the recipes
-        context['meal_recipes'] = []
-        for meal in context['object_list']:
-            context['meal_recipes'].append(MealRecipe.objects.filter(meal=meal.pk))
-        return context
 
 
 class MealCreate(View):
@@ -391,13 +413,18 @@ class GroceryView(FormView):
     def get(self, request, *args, **kwargs):
 
         form = self.form_class()
-        return render(request, self.template_name, {
-            'form': form
-        })
+        return self.generate_grocery_list(form)
 
     def form_valid(self, form):
-        start = form.cleaned_data['start']
-        period = form.cleaned_data['period']
+        return self.generate_grocery_list(form)
+
+    def generate_grocery_list(self,form):
+        if form.is_valid():
+            start = form.cleaned_data['start']
+            period = form.cleaned_data['period']
+        else:
+            start = form.fields['start'].initial
+            period = form.fields['period'].initial
         if period == GroceryForm.ONE_WEEK:
             end = start + timedelta(days=7)
         else:
@@ -438,7 +465,9 @@ class GroceryView(FormView):
         logger.debug("converting to highest units")
         # need to convert unit to highest non-decimal unit and add to main ingredient map
         for ingredient in tspAmounts.keys():
+
             converter = Converter(tspAmounts[ingredient], RecipeIngredient.TEASPOON)
+            logger.debug("before {0} - {1} {2}".format(ingredient, converter.amount, converter.unit))
             converter.convert_to_highest()
             if converter.unit not in ingredients[ingredient].keys():
                 ingredients[ingredient][converter.unit] = 0

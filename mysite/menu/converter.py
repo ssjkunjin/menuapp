@@ -38,7 +38,7 @@ class Converter:
             prevUnit = tempUnit
             logger.debug("{0} {1}".format(tempAmount, tempUnit))
             if tempUnit == RecipeIngredient.TEASPOON:
-                tempAmount *= Decimal(.333)
+                tempAmount *= Decimal(1/3)
                 tempUnit = RecipeIngredient.TABLESPOON
             elif tempUnit == RecipeIngredient.TABLESPOON:
                 tempAmount *= Decimal(.5)

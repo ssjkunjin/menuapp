@@ -26,20 +26,20 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{%url "menu:profile" %}">Menu App</a>
+          <a class="navbar-brand" href="">Menu App</a>
         </div>
         <div class="collapse navbar-collapse navbar-left">
           <ul class="nav navbar-nav">
 		    {% block nav %}
-            <li><a href="{%url "menu:recipe_list" %}">Recipes</a></li>
 			<li><a href="{%url "menu:calendar"%}">Calendar</a></li>
+			<li><a href="{%url "menu:recipe_list" %}">Recipes</a></li>
 			<li><a href="{%url "menu:ingredient_list" %}">Ingredients</a></li>
 			<li><a href="{%url "menu:grocery" %}">Grocery List</a></li>
 			{% endblock %}
           </ul>
         </div><!--/.nav-collapse -->
 		{% if user.is_authenticated %}
- 		<p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">{{ user.email }}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url "menu:logout" %}">Logout</a></p>
+ 		<p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">{{ user.username }}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{% url "menu:logout" %}">Logout</a></p>
         {% else %}
 		<p class="navbar-text navbar-right"><a href="{%url "menu:login" %}">Login</a></p>
 		{% endif %}

@@ -3,9 +3,11 @@
 
 {% block includes %}
  <link href="{% static "menu/css/fullcalendar.css" %}" rel="stylesheet">
-{% endblock %}
+ <link href="{% static "menu/css/fullcalendar.print.css" %}" rel="stylesheet" media="print">
+
+ {% endblock %}
 {% block content %}
-  <div class="header row">
+  <div class="header row hidden-print">
       <div class="col-xs-2">
       <h1>Calendar</h1>
 	</div>
@@ -15,46 +17,7 @@
 		</a>
 	</div>
   </div>
-  <div class="row">
     <div id='calendar'></div>
-  </div>
-  <script type="text/javascript">
-	window.recipes = [];
-	{
-	{% for i in meal_recipes %}
-	  {% for meal_recipe in i %}
-	  var recipelist = window.recipes["{{ meal_recipe.meal.pk }}"];
-      if (recipelist == null) {
-  	    recipelist = [];
-		window.recipes["{{ meal_recipe.meal.pk }}"] = recipelist;
-      }
-      var recipe = {};
-	  {% autoescape off %}
-        recipe.name = "{{ meal_recipe.recipe.name|escapejs }}";	
-      {% endautoescape %}	  
-      recipelist.push(recipe);	 
-      {% endfor %}	  
-	{% endfor %}
-	}
-	window.events = [];
-	{
-	{% for meal in object_list %}
-	  var event = {};
-	    event.title = "{{ meal.get_name_display}}";
-		var recipelist = window.recipes["{{ meal.pk }}"];
-	    if (recipelist != null && recipelist.length > 0){
-		  for (var i = 0; i < recipelist.length; i++) {
-		    event.title +="\n" + recipelist[i].name;
-		  }
-		}
-	    event.start = "{{ meal.date }}";
-		event.pk = "{{ meal.pk }}";
-		event.updateUrl = "{% url "menu:meal_update" meal.pk %}";
-		event.deleteUrl = "{% url "menu:meal_delete" meal.pk %}";
-		window.events.push(event);
-	{% endfor %}
-	}
-  </script>
   
 <div id="actions-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Actions" aria-hidden="true">
   <div class="modal-dialog">
@@ -72,6 +35,7 @@
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="{% static "menu/js/fullcalendar.min.js" %}" rel="stylesheet"></script>
+<script type="text/javascript" src="{% static "menu/js/moment.min.js" %}"></script>
+<script type="text/javascript" src="{% static "menu/js/fullcalendar.min.js" %}"></script>
 <script src="{% static "menu/js/calendar.js" %}"></script>
 {% endblock %}

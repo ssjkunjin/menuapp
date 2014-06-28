@@ -32,7 +32,7 @@
 		    <h4>{{ ingredient.ingredient }}</h4>
 		    {% for unit, value in ingredient.units.items %}
 			  {% if forloop.counter > 1 %}, {% endif %}
-		      <span>{{ value }} {{unit}}</span>
+		      <span>{{ value }} {% if unit != "none" %}{{unit}}{% endif %}</span>
 		    {% endfor %}
 			{% if forloop.counter|divisibleby:"10" %}
 			  </div>
