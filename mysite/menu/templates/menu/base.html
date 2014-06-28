@@ -9,15 +9,15 @@
     <meta name="author" content="">
     <title>{% block title %}Menu App{% endblock %}</title>
 	
-	<link href="{% static "menu/css/bootstrap.min.css" %}" rel="stylesheet">
-	<link href="{% static "menu/css/base.css" %}" rel="stylesheet">
+	<link href="{% static "menu/css/bootstrap.min.css" %}" rel="stylesheet" media="all"/>
+	<link href="{% static "menu/css/base.css" %}" rel="stylesheet"/>
 	{% block includes %}{% endblock %}
 	
 </head>
 
 <body>
 {% block header %}
-   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+   <div class="navbar navbar-inverse navbar-fixed-top hidden-print" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,6 +34,7 @@
             <li><a href="{%url "menu:recipe_list" %}">Recipes</a></li>
 			<li><a href="{%url "menu:calendar"%}">Calendar</a></li>
 			<li><a href="{%url "menu:ingredient_list" %}">Ingredients</a></li>
+			<li><a href="{%url "menu:grocery" %}">Grocery List</a></li>
 			{% endblock %}
           </ul>
         </div><!--/.nav-collapse -->

@@ -1,0 +1,27 @@
+form {
+  max-width: 500px
+}
+
+.grocery-list {
+  border-style: solid;
+  border-width: 3px;
+}
+
+.category {
+  display:inline-block;
+  vertical-align:top;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.ingredients {
+  display:inline-block;
+  vertical-align:top;
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.category h3 {
+  border-bottom-style: dotted;
+  border-bottom-width: 2px;
+}

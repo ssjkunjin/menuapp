@@ -1,0 +1,51 @@
+{% extends "menu/base.html" %}
+{% load staticfiles %}
+
+{% block includes %}
+  <link href="{% static "menu/css/datepicker.css" %}" rel="stylesheet">
+  <link href="{% static "menu/css/grocery.css" %}" rel="stylesheet">	
+{% endblock %}
+
+
+{% block content %}
+  <div class ="row">
+    <form class="form-inline hidden-print" action="{% url "menu:grocery" %}" method="post">
+      {% csrf_token %}
+      <div class="form-group">
+	  <label for="{{ form.start.id_for_label }}">{{ form.start.label}}</label>
+	  {{ form.start }}
+	  </div>
+	  <div class="form-group">
+	  <label for="{{ form.period.id_for_label }}">{{ form.period.label}}</label>
+	  {{ form.period }}
+	  </div>
+	  <div class="form-group">
+	  <input type="submit" class="btn btn-primary" value="Submit" />
+	  </div>
+	</form>
+	{% if categories %}
+	  {% for category,ingredients in categories.items %}
+	    <div class="category">
+		<h3>{{ category }}</h3>
+		 <div class="ingredients">
+		  {% for ingredient in ingredients %}
+		    <h4>{{ ingredient.ingredient }}</h4>
+		    {% for unit, value in ingredient.units.items %}
+			  {% if forloop.counter > 1 %}, {% endif %}
+		      <span>{{ value }} {{unit}}</span>
+		    {% endfor %}
+			{% if forloop.counter|divisibleby:"10" %}
+			  </div>
+			  <div class="ingredients">
+			{% endif %}
+		  {% endfor %}
+		  </div>
+		  </div>
+		
+	  {% endfor %}
+	{% endif %}
+{% endblock %}
+{% block js %}
+<script src="{% static "menu/js/bootstrap-datepicker.js" %}"></script>
+<script src="{% static "menu/js/grocery.js" %}"></script>
+{% endblock %}

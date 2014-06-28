@@ -74,6 +74,37 @@ DATABASES = {
 LOGIN_REDIRECT_URL = 'menu:profile'
 LOGIN_URL = 'menu:login'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+	'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(message)s'
+        },
+
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'log.log',
+			'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+		'menu': {
+		    'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+	    }
+    },
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 

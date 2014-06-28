@@ -1,3 +1,5 @@
+import logging
+from datetime import date, timedelta
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
@@ -11,6 +13,11 @@ from django.forms.models import modelformset_factory, modelform_factory
 from menu.forms import MealRecipeForm, RecipeIngredientForm, GroceryForm
 
 from menu.models import Meal, MealRecipe, Profile, Recipe, Ingredient, RecipeIngredient
+
+from menu.converter import Converter
+
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 class ProfileView(DetailView):
@@ -57,7 +64,7 @@ class RecipeDetailView(DetailView):
 
     def get_object(self):
         recipe = super(RecipeDetailView,self).get_object()
-        if recipe.profile != self.request.user.profile:
+        if recipe.private and recipe.profile != self.request.user.profile:
             raise PermissionDenied
 
         return recipe
@@ -377,25 +384,80 @@ class MealDelete(DeleteView):
         return super(MealDelete, self).dispatch(*args, **kwargs)
 
 class GroceryView(FormView):
-    template_name = 'grocery.html'
+    template_name = 'menu/grocery.html'
     form_class = GroceryForm
     success_url = reverse_lazy('menu:grocery')
 
     def get(self, request, *args, **kwargs):
-        meal = Meal.objects.get(pk=kwargs['pk'])
-        form = self.MealForm(instance=meal)
-        formset = self.MealRecipeFormSet(queryset=MealRecipe.objects.filter(meal=meal))
+
+        form = self.form_class()
         return render(request, self.template_name, {
-            'meal':meal,
-            'form': form,
-            'formset': formset
+            'form': form
         })
 
     def form_valid(self, form):
-        render(request, self.template_name, {
-            'meal':meal,
+        start = form.cleaned_data['start']
+        period = form.cleaned_data['period']
+        if period == GroceryForm.ONE_WEEK:
+            end = start + timedelta(days=7)
+        else:
+            end= start + timedelta(days=14)
+
+        meals = self.request.user.profile.meal_set.filter(
+            date__gte=start
+        ).filter(
+            date__lte=end
+        )
+        ingredients = {}
+        tspAmounts = {}
+        for meal in meals:
+            for mealrecipe in meal.mealrecipe_set.all():
+                for recipeingredient in mealrecipe.recipe.recipeingredient_set.all():
+                    logger.debug("{0} - {1} {2}".format(recipeingredient.ingredient, recipeingredient.amount, recipeingredient.unit))
+                    if recipeingredient.ingredient not in ingredients.keys():
+                        ingredients[recipeingredient.ingredient] = {}
+                    if recipeingredient.unit == RecipeIngredient.NONE:
+                        # none is handled separately as there is no conversion
+                        if recipeingredient.unit not in ingredients[recipeingredient.ingredient].keys():
+                            ingredients[recipeingredient.ingredient][recipeingredient.unit] = 0
+                        ingredients[recipeingredient.ingredient][recipeingredient.unit] += recipeingredient.amount
+                    elif recipeingredient.unit == RecipeIngredient.POUND:
+                        # pounds are handled separately as there is no good conversion
+                        if recipeingredient.unit not in ingredients[recipeingredient.ingredient].keys():
+                            ingredients[recipeingredient.ingredient][recipeingredient.unit] = 0
+                        ingredients[recipeingredient.ingredient][recipeingredient.unit] += recipeingredient.amount
+                    else:
+                        # convert all measurements except none and pounds to tsps
+                        converter = Converter(recipeingredient.amount, recipeingredient.unit)
+                        converter.convert_to_teaspoons()
+
+                        if recipeingredient.ingredient not in tspAmounts.keys():
+                            tspAmounts[recipeingredient.ingredient] = 0
+                        tspAmounts[recipeingredient.ingredient] += converter.amount
+
+        logger.debug("converting to highest units")
+        # need to convert unit to highest non-decimal unit and add to main ingredient map
+        for ingredient in tspAmounts.keys():
+            converter = Converter(tspAmounts[ingredient], RecipeIngredient.TEASPOON)
+            converter.convert_to_highest()
+            if converter.unit not in ingredients[ingredient].keys():
+                ingredients[ingredient][converter.unit] = 0
+
+            logger.debug("after {0} - {1} {2}".format(ingredient, converter.amount, converter.unit))
+            ingredients[ingredient][converter.unit] += converter.amount
+
+        categories = {}
+        for ingredient in ingredients.keys():
+            logger.debug("ingredient: {0}".format(ingredient))
+            if ingredient.get_category_display() not in categories.keys():
+                categories[ingredient.get_category_display()] = []
+
+            categories[ingredient.get_category_display()].append({"ingredient":ingredient, "units" : ingredients[ingredient]})
+
+        logger.debug("categories: {0}".format(categories))
+        return render(self.request, self.template_name, {
             'form': form,
-            'formset': formset
+            'categories':categories
         })
 
     @method_decorator(login_required)

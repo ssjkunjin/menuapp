@@ -11,7 +11,7 @@ class MealRecipeForm(ModelForm):
         super(MealRecipeForm, self).__init__(*args, **kwargs)
         qs = Recipe.objects.filter(
             Q(profile=profile)|Q(private=False)
-        )
+        ).order_by('name')
 
         self.fields['recipe'].queryset = qs
 
@@ -26,7 +26,7 @@ class RecipeIngredientForm(ModelForm):
         super(RecipeIngredientForm, self).__init__(*args, **kwargs)
         qs = Ingredient.objects.filter(
             Q(profile=profile)|Q(private=False)
-        )
+        ).order_by('name')
 
         self.fields['ingredient'].queryset = qs
 
