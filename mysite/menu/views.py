@@ -486,7 +486,7 @@ class GroceryView(FormView):
         logger.debug("categories: {0}".format(categories))
         return render(self.request, self.template_name, {
             'form': form,
-            'categories':categories
+            'categories':sorted(categories.items())
         })
 
     @method_decorator(login_required)

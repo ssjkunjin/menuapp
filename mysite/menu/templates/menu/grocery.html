@@ -24,11 +24,11 @@
 	  </div>
 	</form>
 	{% if categories %}
-	  {% for category,ingredients in categories.items %}
+	  {% for category,ingredients in categories %}
 	    <div class="category">
 		<h3>{{ category }}</h3>
 		 <div class="ingredients">
-		  {% for ingredient in ingredients %}
+		  {% for ingredient in ingredients|dictsort:"ingredient.name.lower" %}
 		    <h4>{{ ingredient.ingredient }}</h4>
 		    {% for unit, value in ingredient.units.items %}
 			  {% if forloop.counter > 1 %}, {% endif %}
